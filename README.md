@@ -1,7 +1,7 @@
 # GridGourmet 🍽️  
 **Your perfect recipe, served in style.**
 
-![GridGourmet 001](https://github.com/user-attachments/assets/8021dffc-a08d-4de4-8dd6-3f0062236b51)
+<img src="https://github.com/user-attachments/assets/8021dffc-a08d-4de4-8dd6-3f0062236b51" alt="GridGourmet 001" style="border-radius: 12px; max-width: 100%;">
 
 ## 🚧 Project Status  
 This project is currently **under development**. Some features may not be fully implemented or are still being refined. Thank you for your patience as we continue building!
