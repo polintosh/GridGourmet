@@ -72,6 +72,18 @@ class CategorySection extends StatelessWidget {
                 width: 60,
                 height: 60,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: 60,
+                    height: 60,
+                    color: CupertinoColors.systemGrey5,
+                    child: const Icon(
+                      CupertinoIcons.photo,
+                      size: 28,
+                      color: CupertinoColors.systemGrey,
+                    ),
+                  );
+                },
               ),
             ),
             const SizedBox(width: 16),

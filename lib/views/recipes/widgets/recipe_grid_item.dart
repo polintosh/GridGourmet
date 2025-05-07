@@ -32,6 +32,18 @@ class RecipeGridItem extends StatelessWidget {
                 recipe.thumbnailUrl,
                 width: double.infinity,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: CupertinoColors.systemGrey5,
+                    child: const Center(
+                      child: Icon(
+                        CupertinoIcons.photo,
+                        size: 40,
+                        color: CupertinoColors.systemGrey,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),

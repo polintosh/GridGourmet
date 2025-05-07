@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import '../models/food.dart';
 import '../services/food_service.dart';
+import '../utils/logger.dart';
 
 /// ViewModel class that manages food data and operations
 /// Follows MVVM pattern by separating business logic from the View
@@ -106,7 +107,7 @@ class FoodViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       // Just log the error but don't show it to the user since this is a background operation
-      print('Failed to load categories: ${e.toString()}');
+      AppLogger.instance.warning('Failed to load categories: ${e.toString()}');
     }
   }
   
@@ -117,7 +118,7 @@ class FoodViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       // Just log the error but don't show it to the user since this is a background operation
-      print('Failed to load countries: ${e.toString()}');
+      AppLogger.instance.warning('Failed to load countries: ${e.toString()}');
     }
   }
   

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import '../models/recipe.dart';
 import '../services/recipe_service.dart';
+import '../utils/logger.dart';
 
 /// ViewModel for handling recipe data and operations
 /// Follows MVVM pattern by separating business logic from the View
@@ -140,7 +141,7 @@ class RecipeViewModel extends ChangeNotifier {
       _categories = await _recipeService.getCategories();
       notifyListeners();
     } catch (e) {
-      print('Failed to load categories: ${e.toString()}');
+      AppLogger.instance.warning('Failed to load categories: ${e.toString()}');
     }
   }
   
@@ -150,7 +151,7 @@ class RecipeViewModel extends ChangeNotifier {
       _areas = await _recipeService.getAreas();
       notifyListeners();
     } catch (e) {
-      print('Failed to load areas: ${e.toString()}');
+      AppLogger.instance.warning('Failed to load areas: ${e.toString()}');
     }
   }
   

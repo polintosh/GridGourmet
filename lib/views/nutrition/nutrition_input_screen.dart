@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import '../../models/nutrition.dart';
 import '../../viewmodels/nutrition_viewmodel.dart';
 import 'widgets/nutrition_summary.dart';
 import 'widgets/empty_nutrition_state.dart';

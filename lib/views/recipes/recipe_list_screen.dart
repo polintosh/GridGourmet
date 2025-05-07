@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import '../../models/recipe.dart';
 import '../../viewmodels/recipe_viewmodel.dart';
 import 'widgets/featured_recipe_card.dart';
 import 'widgets/recipe_grid_item.dart';

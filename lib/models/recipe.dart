@@ -144,7 +144,7 @@ class Recipe {
         category: 'Vegetarian',
         area: 'Indian',
         instructions: 'Heat oil in a large saucepan over medium heat. Cook onion and garlic, stirring...',
-        thumbnailUrl: 'https://www.themealdb.com/images/media/meals/wuprvu1511923181.jpg',
+        thumbnailUrl: 'https://www.themealdb.com/images/media/meals/wyxwsp1486979827.jpg',
         ingredients: ['Cauliflower', 'Chickpeas', 'Coconut Milk', 'Curry Powder', 'Rice'],
         measures: ['1 head', '1 can', '1 can', '2 tbsp', '2 cups'],
       ),

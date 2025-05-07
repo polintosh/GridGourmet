@@ -35,6 +35,20 @@ class FeaturedRecipeCard extends StatelessWidget {
                 height: 160,
                 width: double.infinity,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    height: 160,
+                    width: double.infinity,
+                    color: CupertinoColors.systemGrey5,
+                    child: const Center(
+                      child: Icon(
+                        CupertinoIcons.photo,
+                        size: 50,
+                        color: CupertinoColors.systemGrey,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             const SizedBox(height: 8),
