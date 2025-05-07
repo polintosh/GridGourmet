@@ -1,14 +1,34 @@
+/// Represents a recipe with cooking instructions and ingredients
+/// This class serves as the Model in the MVVM architecture
 class Recipe {
+  /// Unique identifier for the recipe
   final String id;
+  
+  /// Name of the recipe
   final String name;
+  
+  /// Category of the recipe (e.g., Seafood, Vegetarian)
   final String category;
+  
+  /// Geographic origin of the recipe
   final String area;
+  
+  /// Step-by-step cooking instructions
   final String instructions;
+  
+  /// URL to the recipe image
   final String thumbnailUrl;
+  
+  /// List of ingredients required for the recipe
   final List<String> ingredients;
+  
+  /// Measurements for each ingredient
   final List<String> measures;
+  
+  /// Whether the recipe is marked as favorite
   final bool isFavorite;
 
+  /// Constructor for creating a Recipe object
   Recipe({
     required this.id,
     required this.name,
@@ -21,7 +41,81 @@ class Recipe {
     this.isFavorite = false,
   });
 
-  // Mock data factory
+  /// Factory method to create a Recipe object from TheMealDB JSON data
+  factory Recipe.fromJson(Map<String, dynamic> json) {
+    // Extract ingredients and measures
+    List<String> ingredients = [];
+    List<String> measures = [];
+    
+    for (int i = 1; i <= 20; i++) {
+      String ingredient = json['strIngredient$i'] ?? '';
+      String measure = json['strMeasure$i'] ?? '';
+      
+      if (ingredient.trim().isNotEmpty) {
+        ingredients.add(ingredient);
+        measures.add(measure.trim().isNotEmpty ? measure : '');
+      }
+    }
+    
+    return Recipe(
+      id: json['idMeal'] ?? '',
+      name: json['strMeal'] ?? '',
+      category: json['strCategory'] ?? '',
+      area: json['strArea'] ?? '',
+      instructions: json['strInstructions'] ?? '',
+      thumbnailUrl: json['strMealThumb'] ?? '',
+      ingredients: ingredients,
+      measures: measures,
+    );
+  }
+
+  /// Convert Recipe object to JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {
+      'idMeal': id,
+      'strMeal': name,
+      'strCategory': category,
+      'strArea': area,
+      'strInstructions': instructions,
+      'strMealThumb': thumbnailUrl,
+      'isFavorite': isFavorite,
+    };
+    
+    // Add ingredients and measures
+    for (int i = 0; i < ingredients.length; i++) {
+      json['strIngredient${i + 1}'] = ingredients[i];
+      json['strMeasure${i + 1}'] = i < measures.length ? measures[i] : '';
+    }
+    
+    return json;
+  }
+
+  /// Create a copy of this Recipe with modified properties
+  Recipe copyWith({
+    String? id,
+    String? name,
+    String? category,
+    String? area,
+    String? instructions,
+    String? thumbnailUrl,
+    List<String>? ingredients,
+    List<String>? measures,
+    bool? isFavorite,
+  }) {
+    return Recipe(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      category: category ?? this.category,
+      area: area ?? this.area,
+      instructions: instructions ?? this.instructions,
+      thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
+      ingredients: ingredients ?? this.ingredients,
+      measures: measures ?? this.measures,
+      isFavorite: isFavorite ?? this.isFavorite,
+    );
+  }
+
+  /// Generate mock recipe data for testing and development
   static List<Recipe> getMockRecipes() {
     return [
       Recipe(

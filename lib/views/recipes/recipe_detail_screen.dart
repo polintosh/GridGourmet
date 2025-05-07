@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import '../../models/recipe.dart';
+import '../../viewmodels/recipe_viewmodel.dart';
 import 'widgets/info_chip.dart';
 import 'widgets/ingredient_item.dart';
 import 'widgets/origin_map.dart';
 
+/// Screen showing recipe details
+/// Uses MVVM pattern by connecting with the RecipeViewModel
 class RecipeDetailScreen extends StatelessWidget {
   final Recipe recipe;
   
@@ -14,25 +18,47 @@ class RecipeDetailScreen extends StatelessWidget {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         middle: Text(recipe.name),
-        // Add a favorite button
-        trailing: GestureDetector(
-          onTap: () {
-            // In a real app, we would toggle favorite status
-            showCupertinoDialog(
-              context: context,
-              builder: (context) => CupertinoAlertDialog(
-                title: const Text('Added to favorites'),
-                content: Text('${recipe.name} has been added to your favorites.'),
-                actions: [
-                  CupertinoDialogAction(
-                    child: const Text('OK'),
-                    onPressed: () => Navigator.of(context).pop(),
+        // Add a favorite button that connects to the ViewModel
+        trailing: Consumer<RecipeViewModel>(
+          builder: (context, viewModel, child) {
+            return GestureDetector(
+              onTap: () {
+                // Toggle favorite in the ViewModel
+                viewModel.toggleFavorite(recipe.id);
+                
+                // Show a confirmation dialog
+                showCupertinoDialog(
+                  context: context,
+                  builder: (context) => CupertinoAlertDialog(
+                    title: Text(
+                      recipe.isFavorite 
+                          ? 'Removed from favorites' 
+                          : 'Added to favorites'
+                    ),
+                    content: Text(
+                      recipe.isFavorite
+                          ? '${recipe.name} has been removed from your favorites.'
+                          : '${recipe.name} has been added to your favorites.'
+                    ),
+                    actions: [
+                      CupertinoDialogAction(
+                        child: const Text('OK'),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ],
                   ),
-                ],
+                );
+              },
+              child: Icon(
+                recipe.isFavorite 
+                    ? CupertinoIcons.heart_fill
+                    : CupertinoIcons.heart,
+                color: recipe.isFavorite
+                    ? CupertinoColors.systemRed
+                    : null,
               ),
             );
           },
-          child: const Icon(CupertinoIcons.heart),
         ),
       ),
       child: SafeArea(
@@ -45,6 +71,18 @@ class RecipeDetailScreen extends StatelessWidget {
               child: Image.network(
                 recipe.thumbnailUrl,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: CupertinoColors.systemGrey5,
+                    child: const Center(
+                      child: Icon(
+                        CupertinoIcons.photo,
+                        size: 64,
+                        color: CupertinoColors.systemGrey,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             
@@ -103,7 +141,9 @@ class RecipeDetailScreen extends StatelessWidget {
                     recipe.ingredients.length,
                     (index) => IngredientItem(
                       ingredient: recipe.ingredients[index],
-                      measure: recipe.measures[index],
+                      measure: index < recipe.measures.length 
+                          ? recipe.measures[index]
+                          : '',
                     ),
                   ),
                   
