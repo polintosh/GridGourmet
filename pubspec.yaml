@@ -13,6 +13,7 @@ dependencies:
   http: ^1.1.0
   geolocator: ^14.0.0
   geocoding: ^3.0.0
+  provider: ^6.1.2  # Added for MVVM state management
 
 dev_dependencies:
   flutter_test:
