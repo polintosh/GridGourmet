@@ -2,115 +2,194 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/food.dart';
 
+/// Service class that handles API requests to TheMealDB API
+/// TheMealDB is an open database of recipes with detailed information
+/// API Documentation: https://www.themealdb.com/api.php
 class FoodService {
-  final String baseUrl = 'https://world.openfoodfacts.org';
+  final String baseUrl = 'https://www.themealdb.com/api/json/v1/1';
 
-  // Search food by name
+  /// Search for meals by name
+  /// API endpoint: /search.php?s={name}
+  /// Documentation: https://www.themealdb.com/api.php
   Future<List<Food>> searchFoodByName(String query) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/cgi/search.pl?search_terms=$query&search_simple=1&action=process&json=1')
+      Uri.parse('$baseUrl/search.php?s=$query')
     );
     
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       
-      if (data['products'] == null) {
+      if (data['meals'] == null) {
         return [];
       }
       
-      return _parseFoods(data['products']);
+      return (data['meals'] as List)
+          .map((mealData) => Food.fromTheMealDBJson(mealData))
+          .toList();
     } else {
-      throw Exception('Failed to search foods');
+      throw Exception('Failed to search meals: ${response.statusCode}');
     }
   }
 
-  // Get food by barcode
-  Future<Food?> getFoodByBarcode(String barcode) async {
-    final response = await http.get(Uri.parse('$baseUrl/api/v0/product/$barcode.json'));
+  /// Get meal details by ID
+  /// API endpoint: /lookup.php?i={id}
+  /// Documentation: https://www.themealdb.com/api.php
+  Future<Food?> getFoodById(String id) async {
+    final response = await http.get(Uri.parse('$baseUrl/lookup.php?i=$id'));
     
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       
-      if (data['status'] != 1 || data['product'] == null) {
+      if (data['meals'] == null || (data['meals'] as List).isEmpty) {
         return null;
       }
       
-      return _parseFood(data['product']);
+      return Food.fromTheMealDBJson(data['meals'][0]);
     } else {
-      throw Exception('Failed to get food by barcode');
+      throw Exception('Failed to get meal by ID: ${response.statusCode}');
     }
   }
 
-  // Get foods by country
+  /// Get random meal
+  /// API endpoint: /random.php
+  /// Documentation: https://www.themealdb.com/api.php
+  Future<Food?> getRandomFood() async {
+    final response = await http.get(Uri.parse('$baseUrl/random.php'));
+    
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      
+      if (data['meals'] == null || (data['meals'] as List).isEmpty) {
+        return null;
+      }
+      
+      return Food.fromTheMealDBJson(data['meals'][0]);
+    } else {
+      throw Exception('Failed to get random meal: ${response.statusCode}');
+    }
+  }
+
+  /// Get meals by category
+  /// API endpoint: /filter.php?c={category}
+  /// Documentation: https://www.themealdb.com/api.php
+  Future<List<Food>> getFoodsByCategory(String category) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/filter.php?c=$category')
+    );
+    
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      
+      if (data['meals'] == null) {
+        return [];
+      }
+      
+      // The filter endpoint returns limited meal data
+      // We need to fetch full details for each meal
+      final meals = <Food>[];
+      
+      for (var mealData in data['meals']) {
+        final id = mealData['idMeal'];
+        
+        // Create a basic Food object with limited data
+        final food = Food(
+          id: id,
+          name: mealData['strMeal'] ?? '',
+          imageUrl: mealData['strMealThumb'] ?? '',
+          country: '',
+          ingredients: '',
+          category: category,
+        );
+        
+        meals.add(food);
+      }
+      
+      return meals;
+    } else {
+      throw Exception('Failed to get meals by category: ${response.statusCode}');
+    }
+  }
+
+  /// Get meals by area/country
+  /// API endpoint: /filter.php?a={area}
+  /// Documentation: https://www.themealdb.com/api.php
   Future<List<Food>> getFoodsByCountry(String country) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/cgi/search.pl?tagtype_0=countries&tag_contains_0=contains&tag_0=$country&json=1')
+      Uri.parse('$baseUrl/filter.php?a=$country')
     );
     
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       
-      if (data['products'] == null) {
+      if (data['meals'] == null) {
         return [];
       }
       
-      return _parseFoods(data['products']);
+      // The filter endpoint returns limited meal data
+      // We need to fetch full details for each meal
+      final meals = <Food>[];
+      
+      for (var mealData in data['meals']) {
+        final id = mealData['idMeal'];
+        
+        // Create a basic Food object with limited data
+        final food = Food(
+          id: id,
+          name: mealData['strMeal'] ?? '',
+          imageUrl: mealData['strMealThumb'] ?? '',
+          country: country,
+          ingredients: '',
+          category: '',
+        );
+        
+        meals.add(food);
+      }
+      
+      return meals;
     } else {
-      throw Exception('Failed to get foods by country');
+      throw Exception('Failed to get meals by country: ${response.statusCode}');
     }
   }
 
-  // Get foods by nutrition grade
-  Future<List<Food>> getFoodsByNutritionGrade(String grade) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/cgi/search.pl?tagtype_0=nutrition_grades&tag_contains_0=contains&tag_0=$grade&json=1')
-    );
+  /// Get list of all categories
+  /// API endpoint: /categories.php
+  /// Documentation: https://www.themealdb.com/api.php
+  Future<List<String>> getAllCategories() async {
+    final response = await http.get(Uri.parse('$baseUrl/categories.php'));
     
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       
-      if (data['products'] == null) {
+      if (data['categories'] == null) {
         return [];
       }
       
-      return _parseFoods(data['products']);
+      return (data['categories'] as List)
+          .map((category) => category['strCategory'] as String)
+          .toList();
     } else {
-      throw Exception('Failed to get foods by nutrition grade');
+      throw Exception('Failed to get categories: ${response.statusCode}');
     }
   }
 
-  // Helper method to parse a single food from API response
-  Food _parseFood(Map<String, dynamic> productData) {
-    String id = productData['code'] ?? '';
-    String name = productData['product_name'] ?? '';
-    String imageUrl = productData['image_url'] ?? '';
+  /// Get list of all areas/countries
+  /// API endpoint: /list.php?a=list
+  /// Documentation: https://www.themealdb.com/api.php
+  Future<List<String>> getAllCountries() async {
+    final response = await http.get(Uri.parse('$baseUrl/list.php?a=list'));
     
-    // Extract country information
-    String country = '';
-    if (productData['countries_tags'] != null && productData['countries_tags'].isNotEmpty) {
-      // Remove 'en:' prefix from country tag
-      String countryTag = productData['countries_tags'][0];
-      country = countryTag.startsWith('en:') ? countryTag.substring(3) : countryTag;
-      // Capitalize first letter
-      country = country.split('_').map((word) => 
-        word.isNotEmpty ? word[0].toUpperCase() + word.substring(1) : '').join(' ');
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      
+      if (data['meals'] == null) {
+        return [];
+      }
+      
+      return (data['meals'] as List)
+          .map((area) => area['strArea'] as String)
+          .toList();
+    } else {
+      throw Exception('Failed to get countries: ${response.statusCode}');
     }
-    
-    String ingredients = productData['ingredients_text'] ?? '';
-    String nutritionGrade = (productData['nutrition_grades'] ?? '').toLowerCase();
-    
-    return Food(
-      id: id,
-      name: name,
-      imageUrl: imageUrl,
-      country: country,
-      ingredients: ingredients,
-      nutritionGrade: nutritionGrade,
-    );
-  }
-
-  // Helper method to parse multiple foods from API response
-  List<Food> _parseFoods(List<dynamic> productsData) {
-    return productsData.map((product) => _parseFood(product)).toList();
   }
 }

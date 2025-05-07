@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import '../../../models/food.dart';
 
+/// Food item widget that displays food information in a list
+/// Uses MVVM pattern by only handling UI concerns
 class FoodItem extends StatelessWidget {
   final Food food;
   final bool isInShoppingList;
@@ -13,26 +15,43 @@ class FoodItem extends StatelessWidget {
     required this.onToggleShoppingList,
   });
   
-  // Helper method for nutrition icon
-  IconData _getNutritionIcon(String grade) {
-    switch (grade.toLowerCase()) {
-      case 'a': return CupertinoIcons.star_fill;
-      case 'b': return CupertinoIcons.star;
-      case 'c': return CupertinoIcons.star_lefthalf_fill;
-      case 'd': return CupertinoIcons.exclamationmark_circle;
-      case 'e': return CupertinoIcons.exclamationmark_triangle;
-      default: return CupertinoIcons.question_circle;
+  /// Helper method for category icon
+  IconData _getCategoryIcon(String category) {
+    switch (category.toLowerCase()) {
+      case 'beef': return CupertinoIcons.cube_box;
+      case 'chicken': return CupertinoIcons.heart_fill;
+      case 'dessert': return CupertinoIcons.gift_fill;
+      case 'lamb': return CupertinoIcons.square_stack_3d_down_right;
+      case 'pasta': return CupertinoIcons.circle_grid_hex;
+      case 'pork': return CupertinoIcons.circle_grid_3x3;
+      case 'seafood': return CupertinoIcons.drop_fill;
+      case 'side': return CupertinoIcons.square_split_2x2;
+      case 'starter': return CupertinoIcons.flag_fill;
+      case 'vegan': return CupertinoIcons.arrow_3_trianglepath;
+      case 'vegetarian': return CupertinoIcons.tree;
+      case 'breakfast': return CupertinoIcons.sunrise_fill;
+      case 'goat': return CupertinoIcons.circle_grid_hex_fill;
+      case 'miscellaneous': 
+      default: return CupertinoIcons.square_grid_2x2;
     }
   }
   
-  // Helper method for nutrition color
-  Color _getNutritionColor(String grade) {
-    switch (grade.toLowerCase()) {
-      case 'a': return CupertinoColors.systemGreen;
-      case 'b': return CupertinoColors.activeGreen;
-      case 'c': return CupertinoColors.systemYellow;
-      case 'd': return CupertinoColors.systemOrange;
-      case 'e': return CupertinoColors.systemRed;
+  /// Helper method for category color
+  Color _getCategoryColor(String category) {
+    switch (category.toLowerCase()) {
+      case 'beef': return CupertinoColors.systemRed;
+      case 'chicken': return CupertinoColors.systemOrange;
+      case 'dessert': return CupertinoColors.systemPink;
+      case 'lamb': return CupertinoColors.systemPurple;
+      case 'pasta': return CupertinoColors.systemYellow;
+      case 'pork': return CupertinoColors.systemBrown;
+      case 'seafood': return CupertinoColors.systemBlue;
+      case 'side': return CupertinoColors.systemTeal;
+      case 'starter': return CupertinoColors.systemGreen;
+      case 'vegan': 
+      case 'vegetarian': return CupertinoColors.activeGreen;
+      case 'breakfast': return CupertinoColors.systemIndigo;
+      case 'goat': return CupertinoColors.systemPurple;
       default: return CupertinoColors.systemGrey;
     }
   }
@@ -50,6 +69,7 @@ class FoodItem extends StatelessWidget {
         ),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Checkbox for shopping list
           CupertinoButton(
@@ -67,7 +87,7 @@ class FoodItem extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           
-          // Food image
+          // Food image - using error handling for image loading
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Image.network(
@@ -75,6 +95,17 @@ class FoodItem extends StatelessWidget {
               width: 60,
               height: 60,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  width: 60,
+                  height: 60,
+                  color: CupertinoColors.systemGrey5,
+                  child: const Icon(
+                    CupertinoIcons.photo,
+                    color: CupertinoColors.systemGrey,
+                  ),
+                );
+              },
             ),
           ),
           const SizedBox(width: 16),
@@ -92,6 +123,8 @@ class FoodItem extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     decoration: isInShoppingList ? TextDecoration.lineThrough : null,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),
                 
@@ -104,31 +137,39 @@ class FoodItem extends StatelessWidget {
                       color: CupertinoColors.systemGrey,
                     ),
                     const SizedBox(width: 4),
-                    Text(
-                      'Origin: ${food.country}',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: CupertinoColors.systemGrey,
+                    Flexible(
+                      child: Text(
+                        'Origin: ${food.country}',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: CupertinoColors.systemGrey,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 4),
                 
-                // Nutrition grade
+                // Meal category
                 Row(
                   children: [
                     Icon(
-                      _getNutritionIcon(food.nutritionGrade),
+                      _getCategoryIcon(food.category),
                       size: 14,
-                      color: _getNutritionColor(food.nutritionGrade),
+                      color: _getCategoryColor(food.category),
                     ),
                     const SizedBox(width: 4),
-                    Text(
-                      'Nutrition Grade: ${food.nutritionGrade.toUpperCase()}',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: _getNutritionColor(food.nutritionGrade),
+                    Flexible(
+                      child: Text(
+                        'Category: ${food.category.isNotEmpty ? food.category : 'Unknown'}',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: _getCategoryColor(food.category),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],

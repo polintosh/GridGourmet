@@ -1,40 +1,42 @@
 import 'package:flutter/cupertino.dart';
-import '../../models/food.dart';
+import 'package:provider/provider.dart';
+import '../../viewmodels/food_viewmodel.dart';
 import 'widgets/food_item.dart';
 import 'widgets/empty_state.dart';
 
-class FoodListScreen extends StatefulWidget {
+class FoodListScreen extends StatelessWidget {
   const FoodListScreen({super.key});
 
   @override
-  State<FoodListScreen> createState() => _FoodListScreenState();
+  Widget build(BuildContext context) {
+    // Use ChangeNotifierProvider to provide the ViewModel to the widget tree
+    return ChangeNotifierProvider(
+      create: (_) => FoodViewModel(),
+      child: const _FoodListScreenContent(),
+    );
+  }
 }
 
-class _FoodListScreenState extends State<FoodListScreen> {
-  // Mock state for shopping list items
-  Map<String, bool> shoppingListItems = {};
-  
+/// Internal widget that consumes the ViewModel
+class _FoodListScreenContent extends StatefulWidget {
+  const _FoodListScreenContent();
+
+  @override
+  State<_FoodListScreenContent> createState() => _FoodListScreenContentState();
+}
+
+class _FoodListScreenContentState extends State<_FoodListScreenContent> {
   // Search text controller
   final TextEditingController _searchController = TextEditingController();
-  String _searchText = '';
-  
-  // Tab index
-  int _selectedTabIndex = 0;
   
   @override
   void initState() {
     super.initState();
-    // Initialize shopping list with mock data
-    final foods = Food.getMockFoods();
-    for (var food in foods) {
-      shoppingListItems[food.id] = food.isInShoppingList;
-    }
     
-    // Listen for changes in search text
+    // Listen for changes in search text and update ViewModel
     _searchController.addListener(() {
-      setState(() {
-        _searchText = _searchController.text;
-      });
+      Provider.of<FoodViewModel>(context, listen: false)
+        .setSearchText(_searchController.text);
     });
   }
   
@@ -44,91 +46,90 @@ class _FoodListScreenState extends State<FoodListScreen> {
     super.dispose();
   }
 
-  // Toggle shopping list status
-  void _toggleShoppingListItem(String foodId) {
-    setState(() {
-      shoppingListItems[foodId] = !(shoppingListItems[foodId] ?? false);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Get mock foods
-    final foods = Food.getMockFoods();
-    
-    // Filter foods by search text if any
-    final filteredFoods = foods.where((food) {
-      if (_searchText.isEmpty) {
-        return true;
-      }
-      return food.name.toLowerCase().contains(_searchText.toLowerCase()) ||
-          food.country.toLowerCase().contains(_searchText.toLowerCase());
-    }).toList();
-    
-    // Only show foods in the shopping list for the second tab
-    final shoppingListFoods = _selectedTabIndex == 1
-        ? filteredFoods.where((food) => shoppingListItems[food.id] == true).toList()
-        : filteredFoods;
+    return Consumer<FoodViewModel>(
+      builder: (context, viewModel, child) {
+        // Get filtered shopping list foods from ViewModel
+        final shoppingListFoods = viewModel.shoppingListFoods;
 
-    return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('Foods'),
-      ),
-      child: SafeArea(
-        child: Column(
-          children: [
-            // Search bar
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: CupertinoSearchTextField(
-                controller: _searchController,
-                placeholder: 'Search foods...',
-              ),
-            ),
-            
-            // Segmented control for tabs
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: CupertinoSegmentedControl<int>(
-                children: const {
-                  0: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text('All Foods'),
+        return CupertinoPageScaffold(
+          navigationBar: const CupertinoNavigationBar(
+            middle: Text('Foods'),
+          ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                // Search bar
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: CupertinoSearchTextField(
+                    controller: _searchController,
+                    placeholder: 'Search foods...',
                   ),
-                  1: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text('Shopping List'),
+                ),
+                
+                // Segmented control for tabs
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: CupertinoSegmentedControl<int>(
+                    children: const {
+                      0: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Text('All Foods'),
+                      ),
+                      1: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Text('Shopping List'),
+                      ),
+                    },
+                    onValueChanged: (index) {
+                      viewModel.setSelectedTabIndex(index);
+                    },
+                    groupValue: viewModel.selectedTabIndex,
                   ),
-                },
-                onValueChanged: (index) {
-                  setState(() {
-                    _selectedTabIndex = index;
-                  });
-                },
-                groupValue: _selectedTabIndex,
-              ),
-            ),
-            
-            // Main content - list of foods
-            Expanded(
-              child: shoppingListFoods.isEmpty
-                  ? EmptyState(isShoppingList: _selectedTabIndex == 1)
-                  : ListView.builder(
-                      itemCount: shoppingListFoods.length,
-                      itemBuilder: (context, index) {
-                        final food = shoppingListFoods[index];
-                        final isInShoppingList = shoppingListItems[food.id] == true && _selectedTabIndex == 1;
-                        return FoodItem(
-                          food: food,
-                          isInShoppingList: isInShoppingList,
-                          onToggleShoppingList: _toggleShoppingListItem,
-                        );
-                      },
+                ),
+                
+                // Show loading indicator when data is loading
+                if (viewModel.isLoading)
+                  const Expanded(
+                    child: Center(
+                      child: CupertinoActivityIndicator(),
                     ),
+                  )
+                // Show error message when there is an error
+                else if (viewModel.error != null)
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        viewModel.error!,
+                        style: const TextStyle(color: CupertinoColors.destructiveRed),
+                      ),
+                    ),
+                  )
+                // Main content - list of foods
+                else
+                  Expanded(
+                    child: shoppingListFoods.isEmpty
+                      ? EmptyState(isShoppingList: viewModel.selectedTabIndex == 1)
+                      : ListView.builder(
+                          itemCount: shoppingListFoods.length,
+                          itemBuilder: (context, index) {
+                            final food = shoppingListFoods[index];
+                            final isInShoppingList = viewModel.shoppingListItems[food.id] == true;
+                            return FoodItem(
+                              food: food,
+                              isInShoppingList: isInShoppingList,
+                              onToggleShoppingList: viewModel.toggleShoppingListItem,
+                            );
+                          },
+                        ),
+                  ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
