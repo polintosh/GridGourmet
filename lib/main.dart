@@ -30,10 +30,6 @@ class MainApp extends StatelessWidget {
               icon: Icon(CupertinoIcons.cart),
               label: 'Foods',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.chart_bar),
-              label: 'Nutrition',
-            ),
           ],
         ),
         // This builder returns the content for each tab index.
