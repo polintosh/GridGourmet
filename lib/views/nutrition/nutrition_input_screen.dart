@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import '../../models/nutrition.dart';
+import 'widgets/nutrition_summary.dart';
+import 'widgets/empty_nutrition_state.dart';
+import 'widgets/suggestion_item.dart';
+import 'widgets/selected_food_item.dart';
 
 class NutritionInputScreen extends StatefulWidget {
   const NutritionInputScreen({super.key});
@@ -152,303 +156,34 @@ class _NutritionInputScreenState extends State<NutritionInputScreen> {
                   shrinkWrap: true,
                   itemCount: _suggestions.length,
                   itemBuilder: (context, index) {
-                    return _buildSuggestionItem(_suggestions[index]);
+                    return SuggestionItem(
+                      suggestion: _suggestions[index],
+                      onAddItem: _addNutritionItem,
+                    );
                   },
                 ),
               ),
             
             // Summary section (total calories and macros)
-            Container(
-              margin: const EdgeInsets.all(16),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: CupertinoColors.systemGrey6,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                children: [
-                  // Total calories
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        CupertinoIcons.flame_fill,
-                        color: CupertinoColors.systemOrange,
-                        size: 32,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${totals['calories']?.toStringAsFixed(0) ?? '0'} calories',
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  
-                  // Macronutrients
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _buildMacroItem(
-                        'Protein',
-                        totals['protein']?.toStringAsFixed(1) ?? '0',
-                        'g',
-                        CupertinoColors.activeBlue,
-                      ),
-                      _buildMacroItem(
-                        'Carbs',
-                        totals['carbs']?.toStringAsFixed(1) ?? '0',
-                        'g',
-                        CupertinoColors.systemGreen,
-                      ),
-                      _buildMacroItem(
-                        'Fat',
-                        totals['fat']?.toStringAsFixed(1) ?? '0',
-                        'g',
-                        CupertinoColors.systemOrange,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            NutritionSummary(totals: totals),
             
             // Selected foods section
             Expanded(
               child: _selectedNutritionItems.isEmpty
-                  ? _buildEmptyState()
+                  ? const EmptyNutritionState()
                   : ListView.builder(
                       itemCount: _selectedNutritionItems.length,
                       itemBuilder: (context, index) {
-                        return _buildSelectedFoodItem(
-                          _selectedNutritionItems[index],
-                          index,
+                        return SelectedFoodItem(
+                          nutrition: _selectedNutritionItems[index],
+                          index: index,
+                          onRemove: _removeNutritionItem,
                         );
                       },
                     ),
             ),
           ],
         ),
-      ),
-    );
-  }
-  
-  // Widget for empty state
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Icon(
-            CupertinoIcons.cart,
-            size: 64,
-            color: CupertinoColors.systemGrey,
-          ),
-          SizedBox(height: 16),
-          Text(
-            'No foods added yet',
-            style: TextStyle(
-              fontSize: 18,
-              color: CupertinoColors.systemGrey,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Start typing above to add foods',
-            style: TextStyle(
-              fontSize: 14,
-              color: CupertinoColors.systemGrey,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-  
-  // Widget for a macro nutrient display
-  Widget _buildMacroItem(String label, String value, String unit, Color color) {
-    return Column(
-      children: [
-        Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            // ignore: deprecated_member_use
-            color: color.withOpacity(0.2),
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: Text(
-              value,
-              style: TextStyle(
-                color: color,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          '$label ($unit)',
-          style: const TextStyle(
-            fontSize: 14,
-          ),
-        ),
-      ],
-    );
-  }
-  
-  // Widget for suggestion item
-  Widget _buildSuggestionItem(Nutrition item) {
-    return CupertinoButton(
-      padding: EdgeInsets.zero,
-      onPressed: () => _addNutritionItem(item),
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 10,
-        ),
-        decoration: const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: CupertinoColors.systemGrey5,
-              width: 1,
-            ),
-          ),
-        ),
-        child: Row(
-          children: [
-            // Food image
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                item.imageUrl,
-                width: 40,
-                height: 40,
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(width: 12),
-            // Food info
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.foodName,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    '${item.calories.toStringAsFixed(0)} cal | ${item.servingWeight}g per ${item.servingUnit}',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: CupertinoColors.systemGrey,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Add icon
-            const Icon(
-              CupertinoIcons.add_circled,
-              color: CupertinoColors.activeBlue,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-  
-  // Widget for selected food item
-  Widget _buildSelectedFoodItem(Nutrition item, int index) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 12,
-      ),
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: CupertinoColors.systemGrey5,
-            width: 1,
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          // Food image
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              item.imageUrl,
-              width: 50,
-              height: 50,
-              fit: BoxFit.cover,
-            ),
-          ),
-          const SizedBox(width: 16),
-          // Food info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.foodName,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '${item.servingWeight}g | ${item.servingUnit}',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: CupertinoColors.systemGrey,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Nutrition info
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '${item.calories.toStringAsFixed(0)} cal',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'P: ${item.protein}g | C: ${item.carbs}g | F: ${item.totalFat}g',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: CupertinoColors.systemGrey,
-                ),
-              ),
-            ],
-          ),
-          // Remove button
-          CupertinoButton(
-            padding: const EdgeInsets.only(left: 8),
-            onPressed: () => _removeNutritionItem(index),
-            child: const Icon(
-              CupertinoIcons.delete,
-              color: CupertinoColors.systemRed,
-              size: 20,
-            ),
-          ),
-        ],
       ),
     );
   }
