@@ -26,7 +26,6 @@ class FoodService {
       for (var ingredient in data['meals']) {
         final id = ingredient['idIngredient'] ?? '';
         final name = ingredient['strIngredient'] ?? '';
-        final description = ingredient['strDescription'] ?? '';
 
         // Create a basic food item for this ingredient
         final food = Food(

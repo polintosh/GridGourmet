@@ -48,6 +48,40 @@ class _FoodListScreenContentState extends State<_FoodListScreenContent> {
     super.dispose();
   }
 
+  // Show dropdown menu for filtering options
+  void _showFilterMenu(BuildContext context, FoodViewModel viewModel) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text('Filter Foods'),
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            isDefaultAction: viewModel.selectedTabIndex == 0,
+            onPressed: () {
+              viewModel.setSelectedTabIndex(0);
+              Navigator.pop(context);
+            },
+            child: const Text('All Foods'),
+          ),
+          CupertinoActionSheetAction(
+            isDefaultAction: viewModel.selectedTabIndex == 1,
+            onPressed: () {
+              viewModel.setSelectedTabIndex(1);
+              Navigator.pop(context);
+            },
+            child: const Text('Shopping List'),
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Cancel'),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<FoodViewModel>(
@@ -55,8 +89,26 @@ class _FoodListScreenContentState extends State<_FoodListScreenContent> {
         // Get filtered shopping list foods from ViewModel
         final shoppingListFoods = viewModel.shoppingListFoods;
 
+        // Choose icon based on selected tab
+        final leadingIcon = viewModel.selectedTabIndex == 0 
+            ? CupertinoIcons.list_bullet 
+            : CupertinoIcons.cart;
+
         return CupertinoPageScaffold(
-          navigationBar: const CupertinoNavigationBar(middle: Text('Foods')),
+          navigationBar: CupertinoNavigationBar(
+            middle: const Text('Foods'),
+            // Use an icon button that shows a menu when tapped
+            leading: GestureDetector(
+              onTap: () => _showFilterMenu(context, viewModel),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  leadingIcon,
+                  color: CupertinoColors.activeBlue,
+                ),
+              ),
+            ),
+          ),
           child: SafeArea(
             child: Column(
               children: [
@@ -66,27 +118,6 @@ class _FoodListScreenContentState extends State<_FoodListScreenContent> {
                   child: CupertinoSearchTextField(
                     controller: _searchController,
                     placeholder: 'Search foods...',
-                  ),
-                ),
-
-                // Segmented control for tabs
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: CupertinoSegmentedControl<int>(
-                    children: const {
-                      0: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Text('All Foods'),
-                      ),
-                      1: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Text('Shopping List'),
-                      ),
-                    },
-                    onValueChanged: (index) {
-                      viewModel.setSelectedTabIndex(index);
-                    },
-                    groupValue: viewModel.selectedTabIndex,
                   ),
                 ),
 

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'views/recipes/recipe_list_screen.dart';
 import 'views/foods/food_list_screen.dart';
-import 'views/nutrition/nutrition_input_screen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -39,10 +38,6 @@ class MainApp extends StatelessWidget {
               return CupertinoTabView(builder: (context) => RecipeListScreen());
             case 1:
               return CupertinoTabView(builder: (context) => FoodListScreen());
-            case 2:
-              return CupertinoTabView(
-                builder: (context) => NutritionInputScreen(),
-              );
             default:
               return CupertinoTabView(builder: (context) => RecipeListScreen());
           }
