@@ -26,24 +26,28 @@ class _NutritionInputScreenContent extends StatefulWidget {
   const _NutritionInputScreenContent();
 
   @override
-  State<_NutritionInputScreenContent> createState() => _NutritionInputScreenContentState();
+  State<_NutritionInputScreenContent> createState() =>
+      _NutritionInputScreenContentState();
 }
 
-class _NutritionInputScreenContentState extends State<_NutritionInputScreenContent> {
+class _NutritionInputScreenContentState
+    extends State<_NutritionInputScreenContent> {
   // Controller for the text input
   final TextEditingController _foodQueryController = TextEditingController();
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     // Listen for changes in input and update ViewModel
     _foodQueryController.addListener(() {
-      Provider.of<NutritionViewModel>(context, listen: false)
-        .setSearchQuery(_foodQueryController.text);
+      Provider.of<NutritionViewModel>(
+        context,
+        listen: false,
+      ).setSearchQuery(_foodQueryController.text);
     });
   }
-  
+
   @override
   void dispose() {
     _foodQueryController.dispose();
@@ -56,7 +60,7 @@ class _NutritionInputScreenContentState extends State<_NutritionInputScreenConte
       builder: (context, viewModel, child) {
         // Calculate totals using the ViewModel
         final totals = viewModel.calculateTotals();
-        
+
         return CupertinoPageScaffold(
           navigationBar: const CupertinoNavigationBar(
             middle: Text('Nutrition Calculator'),
@@ -79,7 +83,7 @@ class _NutritionInputScreenContentState extends State<_NutritionInputScreenConte
                         ),
                       ),
                       const SizedBox(height: 12),
-                      
+
                       // Food input field
                       CupertinoTextField(
                         controller: _foodQueryController,
@@ -103,7 +107,7 @@ class _NutritionInputScreenContentState extends State<_NutritionInputScreenConte
                     ],
                   ),
                 ),
-                
+
                 // Loading indicator
                 if (viewModel.isLoading)
                   const Center(
@@ -112,7 +116,7 @@ class _NutritionInputScreenContentState extends State<_NutritionInputScreenConte
                       child: CupertinoActivityIndicator(),
                     ),
                   ),
-                
+
                 // Error message
                 if (viewModel.error != null)
                   Padding(
@@ -124,7 +128,7 @@ class _NutritionInputScreenContentState extends State<_NutritionInputScreenConte
                       ),
                     ),
                   ),
-                
+
                 // Suggestions section (only visible when there are suggestions)
                 if (viewModel.suggestions.isNotEmpty)
                   Container(
@@ -140,26 +144,27 @@ class _NutritionInputScreenContentState extends State<_NutritionInputScreenConte
                       },
                     ),
                   ),
-                
+
                 // Summary section (total calories and macros)
                 NutritionSummary(totals: totals),
-                
+
                 // Selected foods section
                 Expanded(
-                  child: viewModel.selectedItems.isEmpty
-                      ? const EmptyNutritionState()
-                      : ListView.builder(
-                          itemCount: viewModel.selectedItems.length,
-                          itemBuilder: (context, index) {
-                            return SelectedFoodItem(
-                              nutrition: viewModel.selectedItems[index],
-                              index: index,
-                              onRemove: viewModel.removeNutritionItem,
-                            );
-                          },
-                        ),
+                  child:
+                      viewModel.selectedItems.isEmpty
+                          ? const EmptyNutritionState()
+                          : ListView.builder(
+                            itemCount: viewModel.selectedItems.length,
+                            itemBuilder: (context, index) {
+                              return SelectedFoodItem(
+                                nutrition: viewModel.selectedItems[index],
+                                index: index,
+                                onRemove: viewModel.removeNutritionItem,
+                              );
+                            },
+                          ),
                 ),
-                
+
                 // Clear all button (only visible when there are selected items)
                 if (viewModel.selectedItems.isNotEmpty)
                   Padding(

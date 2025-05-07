@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 class IngredientItem extends StatelessWidget {
   final String ingredient;
   final String measure;
-  
+
   const IngredientItem({
-    super.key, 
-    required this.ingredient, 
+    super.key,
+    required this.ingredient,
     required this.measure,
   });
 
@@ -23,22 +23,14 @@ class IngredientItem extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(
-              ingredient,
-              style: const TextStyle(
-                fontSize: 16,
-              ),
-            ),
+            child: Text(ingredient, style: const TextStyle(fontSize: 16)),
           ),
           Text(
             measure,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ],
       ),
     );
   }
-} 
+}

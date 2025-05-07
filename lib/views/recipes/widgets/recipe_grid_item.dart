@@ -5,10 +5,7 @@ import '../recipe_detail_screen.dart';
 class RecipeGridItem extends StatelessWidget {
   final Recipe recipe;
 
-  const RecipeGridItem({
-    super.key,
-    required this.recipe,
-  });
+  const RecipeGridItem({super.key, required this.recipe});
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +48,7 @@ class RecipeGridItem extends StatelessWidget {
           // Recipe name
           Text(
             recipe.name,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -70,4 +64,4 @@ class RecipeGridItem extends StatelessWidget {
       ),
     );
   }
-} 
+}

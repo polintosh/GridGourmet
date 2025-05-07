@@ -40,21 +40,15 @@ class MainApp extends StatelessWidget {
         tabBuilder: (context, index) {
           switch (index) {
             case 0:
-              return CupertinoTabView(
-                builder: (context) => RecipeListScreen(),
-              );
+              return CupertinoTabView(builder: (context) => RecipeListScreen());
             case 1:
-              return CupertinoTabView(
-                builder: (context) => FoodListScreen(),
-              );
+              return CupertinoTabView(builder: (context) => FoodListScreen());
             case 2:
               return CupertinoTabView(
                 builder: (context) => NutritionInputScreen(),
               );
             default:
-              return CupertinoTabView(
-                builder: (context) => RecipeListScreen(),
-              );
+              return CupertinoTabView(builder: (context) => RecipeListScreen());
           }
         },
       ),

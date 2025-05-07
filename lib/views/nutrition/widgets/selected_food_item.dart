@@ -7,7 +7,7 @@ class SelectedFoodItem extends StatelessWidget {
   final Function(int) onRemove;
 
   const SelectedFoodItem({
-    super.key, 
+    super.key,
     required this.nutrition,
     required this.index,
     required this.onRemove,
@@ -39,9 +39,7 @@ class SelectedFoodItem extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   'Calories: ${nutrition.calories} cal',
-                  style: const TextStyle(
-                    fontSize: 14,
-                  ),
+                  style: const TextStyle(fontSize: 14),
                 ),
                 const SizedBox(height: 2),
                 Row(
@@ -74,7 +72,7 @@ class SelectedFoodItem extends StatelessWidget {
               ],
             ),
           ),
-          
+
           // Remove button
           CupertinoButton(
             padding: EdgeInsets.zero,
@@ -88,4 +86,4 @@ class SelectedFoodItem extends StatelessWidget {
       ),
     );
   }
-} 
+}

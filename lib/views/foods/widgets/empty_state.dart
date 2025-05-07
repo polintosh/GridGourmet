@@ -2,11 +2,8 @@ import 'package:flutter/cupertino.dart';
 
 class EmptyState extends StatelessWidget {
   final bool isShoppingList;
-  
-  const EmptyState({
-    super.key,
-    this.isShoppingList = false,
-  });
+
+  const EmptyState({super.key, this.isShoppingList = false});
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +18,7 @@ class EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            isShoppingList
-                ? 'Your shopping list is empty'
-                : 'No foods found',
+            isShoppingList ? 'Your shopping list is empty' : 'No foods found',
             style: const TextStyle(
               fontSize: 18,
               color: CupertinoColors.systemGrey,
@@ -43,4 +38,4 @@ class EmptyState extends StatelessWidget {
       ),
     );
   }
-} 
+}

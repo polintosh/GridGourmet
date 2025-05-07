@@ -10,7 +10,7 @@ import 'widgets/origin_map.dart';
 /// Uses MVVM pattern by connecting with the RecipeViewModel
 class RecipeDetailScreen extends StatelessWidget {
   final Recipe recipe;
-  
+
   const RecipeDetailScreen({super.key, required this.recipe});
 
   @override
@@ -18,9 +18,7 @@ class RecipeDetailScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => RecipeViewModel(),
       child: CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          middle: Text(recipe.name),
-        ),
+        navigationBar: CupertinoNavigationBar(middle: Text(recipe.name)),
         child: SafeArea(
           child: ListView(
             children: [
@@ -45,7 +43,7 @@ class RecipeDetailScreen extends StatelessWidget {
                   },
                 ),
               ),
-              
+
               // Recipe info section
               Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -55,16 +53,25 @@ class RecipeDetailScreen extends StatelessWidget {
                     // Recipe metadata
                     Row(
                       children: [
-                        InfoChip(icon: CupertinoIcons.globe, label: recipe.area),
+                        InfoChip(
+                          icon: CupertinoIcons.globe,
+                          label: recipe.area,
+                        ),
                         const SizedBox(width: 8),
-                        InfoChip(icon: CupertinoIcons.tag, label: recipe.category),
+                        InfoChip(
+                          icon: CupertinoIcons.tag,
+                          label: recipe.category,
+                        ),
                         const SizedBox(width: 8),
-                        const InfoChip(icon: CupertinoIcons.time, label: '30 min'), // Mock time
+                        const InfoChip(
+                          icon: CupertinoIcons.time,
+                          label: '30 min',
+                        ), // Mock time
                       ],
                     ),
-                    
+
                     const SizedBox(height: 16),
-                    
+
                     // Instructions heading
                     const Text(
                       'Instructions',
@@ -74,18 +81,15 @@ class RecipeDetailScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    
+
                     // Instructions
                     Text(
                       recipe.instructions,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        height: 1.5,
-                      ),
+                      style: const TextStyle(fontSize: 16, height: 1.5),
                     ),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Ingredients heading
                     const Text(
                       'Ingredients',
@@ -95,20 +99,21 @@ class RecipeDetailScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    
+
                     // Ingredients list
                     ...List.generate(
                       recipe.ingredients.length,
                       (index) => IngredientItem(
                         ingredient: recipe.ingredients[index],
-                        measure: index < recipe.measures.length 
-                            ? recipe.measures[index]
-                            : '',
+                        measure:
+                            index < recipe.measures.length
+                                ? recipe.measures[index]
+                                : '',
                       ),
                     ),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Origin section
                     const Text(
                       'Origin',
@@ -118,15 +123,13 @@ class RecipeDetailScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    
+
                     // Origin info
                     Text(
                       'This dish originates from ${recipe.area} cuisine.',
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
+                      style: const TextStyle(fontSize: 16),
                     ),
-                    
+
                     // Map with the origin
                     OriginMap(area: recipe.area),
                   ],

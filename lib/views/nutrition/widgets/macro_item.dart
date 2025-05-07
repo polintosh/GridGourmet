@@ -28,10 +28,7 @@ class MacroItem extends StatelessWidget {
           child: Center(
             child: Text(
               value,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, color: color),
             ),
           ),
         ),
@@ -53,4 +50,4 @@ class MacroItem extends StatelessWidget {
       ],
     );
   }
-} 
+}

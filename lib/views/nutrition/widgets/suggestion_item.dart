@@ -19,10 +19,7 @@ class SuggestionItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: const BoxDecoration(
           border: Border(
-            bottom: BorderSide(
-              color: CupertinoColors.systemGrey5,
-              width: 0.5,
-            ),
+            bottom: BorderSide(color: CupertinoColors.systemGrey5, width: 0.5),
           ),
         ),
         child: Row(
@@ -38,9 +35,7 @@ class SuggestionItem extends StatelessWidget {
                 children: [
                   Text(
                     suggestion.foodName,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
                     '${suggestion.calories} cal | ${suggestion.protein}g protein',
@@ -57,4 +52,4 @@ class SuggestionItem extends StatelessWidget {
       ),
     );
   }
-} 
+}

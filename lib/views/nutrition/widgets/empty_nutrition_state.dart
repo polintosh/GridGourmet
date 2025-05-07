@@ -17,21 +17,15 @@ class EmptyNutritionState extends StatelessWidget {
           SizedBox(height: 16),
           Text(
             'No foods added yet',
-            style: TextStyle(
-              fontSize: 18,
-              color: CupertinoColors.systemGrey,
-            ),
+            style: TextStyle(fontSize: 18, color: CupertinoColors.systemGrey),
           ),
           SizedBox(height: 8),
           Text(
             'Search and add foods to calculate nutrition',
-            style: TextStyle(
-              fontSize: 14,
-              color: CupertinoColors.systemGrey,
-            ),
+            style: TextStyle(fontSize: 14, color: CupertinoColors.systemGrey),
           ),
         ],
       ),
     );
   }
-} 
+}

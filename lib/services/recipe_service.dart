@@ -15,19 +15,19 @@ class RecipeService {
     if (query.trim().isEmpty) {
       return [];
     }
-    
+
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/search.php?s=${Uri.encodeComponent(query)}')
+        Uri.parse('$baseUrl/search.php?s=${Uri.encodeComponent(query)}'),
       );
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        
+
         if (data['meals'] == null) {
           return [];
         }
-        
+
         return (data['meals'] as List)
             .map((meal) => Recipe.fromJson(meal))
             .toList();
@@ -46,26 +46,26 @@ class RecipeService {
     if (category.trim().isEmpty) {
       return [];
     }
-    
+
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/filter.php?c=${Uri.encodeComponent(category)}')
+        Uri.parse('$baseUrl/filter.php?c=${Uri.encodeComponent(category)}'),
       );
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        
+
         if (data['meals'] == null) {
           return [];
         }
-        
+
         // The filter endpoint only returns basic information
         // We need to fetch full details for each recipe
         List<Recipe> recipes = [];
-        
+
         // Limit to 5 recipes to avoid too many API calls
         final items = (data['meals'] as List).take(5).toList();
-        
+
         for (var meal in items) {
           try {
             // Fetch full recipe details by ID
@@ -76,10 +76,12 @@ class RecipeService {
             continue;
           }
         }
-        
+
         return recipes;
       } else {
-        throw Exception('Failed to get recipes by category: ${response.statusCode}');
+        throw Exception(
+          'Failed to get recipes by category: ${response.statusCode}',
+        );
       }
     } catch (e) {
       throw Exception('Failed to get recipes by category: $e');
@@ -93,26 +95,26 @@ class RecipeService {
     if (area.trim().isEmpty) {
       return [];
     }
-    
+
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/filter.php?a=${Uri.encodeComponent(area)}')
+        Uri.parse('$baseUrl/filter.php?a=${Uri.encodeComponent(area)}'),
       );
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        
+
         if (data['meals'] == null) {
           return [];
         }
-        
+
         // The filter endpoint only returns basic information
         // We need to fetch full details for each recipe
         List<Recipe> recipes = [];
-        
+
         // Limit to 5 recipes to avoid too many API calls
         final items = (data['meals'] as List).take(5).toList();
-        
+
         for (var meal in items) {
           try {
             // Fetch full recipe details by ID
@@ -123,10 +125,12 @@ class RecipeService {
             continue;
           }
         }
-        
+
         return recipes;
       } else {
-        throw Exception('Failed to get recipes by area: ${response.statusCode}');
+        throw Exception(
+          'Failed to get recipes by area: ${response.statusCode}',
+        );
       }
     } catch (e) {
       throw Exception('Failed to get recipes by area: $e');
@@ -140,17 +144,17 @@ class RecipeService {
     if (id.trim().isEmpty) {
       throw Exception('Recipe ID cannot be empty');
     }
-    
+
     try {
       final response = await http.get(Uri.parse('$baseUrl/lookup.php?i=$id'));
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        
+
         if (data['meals'] == null || (data['meals'] as List).isEmpty) {
           throw Exception('Recipe not found');
         }
-        
+
         return Recipe.fromJson(data['meals'][0]);
       } else {
         throw Exception('Failed to get recipe details: ${response.statusCode}');
@@ -165,14 +169,14 @@ class RecipeService {
   Future<List<String>> getCategories() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/list.php?c=list'));
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        
+
         if (data['meals'] == null) {
           return [];
         }
-        
+
         return (data['meals'] as List)
             .map((category) => category['strCategory'] as String)
             .toList();
@@ -189,14 +193,14 @@ class RecipeService {
   Future<List<String>> getAreas() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/list.php?a=list'));
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        
+
         if (data['meals'] == null) {
           return [];
         }
-        
+
         return (data['meals'] as List)
             .map((area) => area['strArea'] as String)
             .toList();

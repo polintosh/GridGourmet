@@ -3,31 +3,31 @@
 class Nutrition {
   /// Name of the food item
   final String foodName;
-  
+
   /// Calories per serving
   final double calories;
-  
+
   /// Total fat in grams per serving
   final double totalFat;
-  
+
   /// Protein in grams per serving
   final double protein;
-  
+
   /// Carbohydrates in grams per serving
   final double carbs;
-  
+
   /// Fiber in grams per serving
   final double fiber;
-  
+
   /// Sugar in grams per serving
   final double sugar;
-  
+
   /// Unit of serving (e.g., cup, tablespoon, piece)
   final String servingUnit;
-  
+
   /// Weight of the serving in grams
   final double servingWeight;
-  
+
   /// URL to the food item image
   final String imageUrl;
 

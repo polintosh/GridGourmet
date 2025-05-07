@@ -4,10 +4,7 @@ import 'macro_item.dart';
 class NutritionSummary extends StatelessWidget {
   final Map<String, double> totals;
 
-  const NutritionSummary({
-    super.key,
-    required this.totals,
-  });
+  const NutritionSummary({super.key, required this.totals});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +37,7 @@ class NutritionSummary extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          
+
           // Macronutrients
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -69,4 +66,4 @@ class NutritionSummary extends StatelessWidget {
       ),
     );
   }
-} 
+}

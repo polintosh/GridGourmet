@@ -3,12 +3,8 @@ import 'package:flutter/cupertino.dart';
 class InfoChip extends StatelessWidget {
   final IconData icon;
   final String label;
-  
-  const InfoChip({
-    super.key, 
-    required this.icon, 
-    required this.label,
-  });
+
+  const InfoChip({super.key, required this.icon, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -21,20 +17,11 @@ class InfoChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 16,
-            color: CupertinoColors.activeBlue,
-          ),
+          Icon(icon, size: 16, color: CupertinoColors.activeBlue),
           const SizedBox(width: 4),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 14,
-            ),
-          ),
+          Text(label, style: const TextStyle(fontSize: 14)),
         ],
       ),
     );
   }
-} 
+}

@@ -22,10 +22,7 @@ class CategorySection extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: Text(
             category,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
         // List of recipes in this category
@@ -56,10 +53,7 @@ class CategorySection extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: const BoxDecoration(
           border: Border(
-            bottom: BorderSide(
-              color: CupertinoColors.systemGrey5,
-              width: 0.5,
-            ),
+            bottom: BorderSide(color: CupertinoColors.systemGrey5, width: 0.5),
           ),
         ),
         child: Row(
@@ -120,4 +114,4 @@ class CategorySection extends StatelessWidget {
       ),
     );
   }
-} 
+}

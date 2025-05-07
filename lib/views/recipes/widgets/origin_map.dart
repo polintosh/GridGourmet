@@ -3,10 +3,7 @@ import 'package:flutter/cupertino.dart';
 class OriginMap extends StatelessWidget {
   final String area;
 
-  const OriginMap({
-    super.key,
-    required this.area,
-  });
+  const OriginMap({super.key, required this.area});
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +26,7 @@ class OriginMap extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'Map of $area',
-              style: const TextStyle(
-                color: CupertinoColors.systemGrey,
-              ),
+              style: const TextStyle(color: CupertinoColors.systemGrey),
             ),
           ],
         ),

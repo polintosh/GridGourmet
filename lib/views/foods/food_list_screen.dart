@@ -28,18 +28,20 @@ class _FoodListScreenContent extends StatefulWidget {
 class _FoodListScreenContentState extends State<_FoodListScreenContent> {
   // Search text controller
   final TextEditingController _searchController = TextEditingController();
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     // Listen for changes in search text and update ViewModel
     _searchController.addListener(() {
-      Provider.of<FoodViewModel>(context, listen: false)
-        .setSearchText(_searchController.text);
+      Provider.of<FoodViewModel>(
+        context,
+        listen: false,
+      ).setSearchText(_searchController.text);
     });
   }
-  
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -54,9 +56,7 @@ class _FoodListScreenContentState extends State<_FoodListScreenContent> {
         final shoppingListFoods = viewModel.shoppingListFoods;
 
         return CupertinoPageScaffold(
-          navigationBar: const CupertinoNavigationBar(
-            middle: Text('Foods'),
-          ),
+          navigationBar: const CupertinoNavigationBar(middle: Text('Foods')),
           child: SafeArea(
             child: Column(
               children: [
@@ -68,7 +68,7 @@ class _FoodListScreenContentState extends State<_FoodListScreenContent> {
                     placeholder: 'Search foods...',
                   ),
                 ),
-                
+
                 // Segmented control for tabs
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -89,13 +89,11 @@ class _FoodListScreenContentState extends State<_FoodListScreenContent> {
                     groupValue: viewModel.selectedTabIndex,
                   ),
                 ),
-                
+
                 // Show loading indicator when data is loading
                 if (viewModel.isLoading)
                   const Expanded(
-                    child: Center(
-                      child: CupertinoActivityIndicator(),
-                    ),
+                    child: Center(child: CupertinoActivityIndicator()),
                   )
                 // Show error message when there is an error
                 else if (viewModel.error != null)
@@ -103,27 +101,35 @@ class _FoodListScreenContentState extends State<_FoodListScreenContent> {
                     child: Center(
                       child: Text(
                         viewModel.error!,
-                        style: const TextStyle(color: CupertinoColors.destructiveRed),
+                        style: const TextStyle(
+                          color: CupertinoColors.destructiveRed,
+                        ),
                       ),
                     ),
                   )
                 // Main content - list of foods
                 else
                   Expanded(
-                    child: shoppingListFoods.isEmpty
-                      ? EmptyState(isShoppingList: viewModel.selectedTabIndex == 1)
-                      : ListView.builder(
-                          itemCount: shoppingListFoods.length,
-                          itemBuilder: (context, index) {
-                            final food = shoppingListFoods[index];
-                            final isInShoppingList = viewModel.shoppingListItems[food.id] == true;
-                            return FoodItem(
-                              food: food,
-                              isInShoppingList: isInShoppingList,
-                              onToggleShoppingList: viewModel.toggleShoppingListItem,
-                            );
-                          },
-                        ),
+                    child:
+                        shoppingListFoods.isEmpty
+                            ? EmptyState(
+                              isShoppingList: viewModel.selectedTabIndex == 1,
+                            )
+                            : ListView.builder(
+                              itemCount: shoppingListFoods.length,
+                              itemBuilder: (context, index) {
+                                final food = shoppingListFoods[index];
+                                final isInShoppingList =
+                                    viewModel.shoppingListItems[food.id] ==
+                                    true;
+                                return FoodItem(
+                                  food: food,
+                                  isInShoppingList: isInShoppingList,
+                                  onToggleShoppingList:
+                                      viewModel.toggleShoppingListItem,
+                                );
+                              },
+                            ),
                   ),
               ],
             ),

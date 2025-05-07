@@ -5,10 +5,7 @@ import '../recipe_detail_screen.dart';
 class FeaturedRecipeCard extends StatelessWidget {
   final Recipe recipe;
 
-  const FeaturedRecipeCard({
-    super.key,
-    required this.recipe,
-  });
+  const FeaturedRecipeCard({super.key, required this.recipe});
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +52,7 @@ class FeaturedRecipeCard extends StatelessWidget {
             // Recipe name
             Text(
               recipe.name,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -75,4 +69,4 @@ class FeaturedRecipeCard extends StatelessWidget {
       ),
     );
   }
-} 
+}
