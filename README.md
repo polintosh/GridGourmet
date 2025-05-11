@@ -25,20 +25,23 @@ GridGourmet uses various list and grid implementations as the fundamental buildi
 The core of the app's visual appeal comes from its grid layout implementation:
 
 ```dart
-SliverGrid(
+GridView.builder(
+  shrinkWrap: true,
+  physics: const NeverScrollableScrollPhysics(),
   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
     crossAxisCount: 2, // Two columns
     childAspectRatio: 0.75,
     crossAxisSpacing: 16,
     mainAxisSpacing: 16,
   ),
-  delegate: SliverChildBuilderDelegate((context, index) {
+  itemCount: viewModel.recipes.length,
+  itemBuilder: (context, index) {
     return RecipeGridItem(recipe: viewModel.recipes[index]);
-  }, childCount: viewModel.recipes.length),
+  },
 )
 ```
 
-This implementation creates a responsive two-column grid of recipe cards with customized spacing and aspect ratio for an aesthetically pleasing layout. By using `SliverGrid` inside a `CustomScrollView`, the app achieves seamless integration between lists and grids in the same scrolling container.
+This implementation creates a responsive two-column grid of recipe cards with customized spacing and aspect ratio for an aesthetically pleasing layout. By using `GridView.builder` inside a `SliverToBoxAdapter`, the app maintains the ability to combine this grid with other components in a `CustomScrollView` while simplifying the implementation.
 
 ### Technical Alternatives & Enhancements
 - **StaggeredGridView**: A potential enhancement would be implementing a staggered grid for more dynamic layouts with varying item sizes.

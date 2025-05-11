@@ -126,23 +126,24 @@ class _RecipeListScreenContent extends StatelessWidget {
                                       child: Text('No recipes found'),
                                     ),
                                   )
-                                  : SliverGrid(
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                  : SliverToBoxAdapter(
+                                      child: GridView.builder(
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 2, // Two columns
                                           childAspectRatio: 0.75,
                                           crossAxisSpacing: 16,
                                           mainAxisSpacing: 16,
                                         ),
-                                    delegate: SliverChildBuilderDelegate((
-                                      context,
-                                      index,
-                                    ) {
-                                      return RecipeGridItem(
-                                        recipe: viewModel.recipes[index],
-                                      );
-                                    }, childCount: viewModel.recipes.length),
-                                  ),
+                                        itemCount: viewModel.recipes.length,
+                                        itemBuilder: (context, index) {
+                                          return RecipeGridItem(
+                                            recipe: viewModel.recipes[index],
+                                          );
+                                        },
+                                      ),
+                                    ),
                         ),
 
                         // Heading for recipes by category (different item types)
