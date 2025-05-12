@@ -52,33 +52,34 @@ class _FoodListScreenContentState extends State<_FoodListScreenContent> {
   void _showFilterMenu(BuildContext context, FoodViewModel viewModel) {
     showCupertinoModalPopup(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text('Filter Foods'),
-        actions: <CupertinoActionSheetAction>[
-          CupertinoActionSheetAction(
-            isDefaultAction: viewModel.selectedTabIndex == 0,
-            onPressed: () {
-              viewModel.setSelectedTabIndex(0);
-              Navigator.pop(context);
-            },
-            child: const Text('All Foods'),
+      builder:
+          (BuildContext context) => CupertinoActionSheet(
+            title: const Text('Filter Foods'),
+            actions: <CupertinoActionSheetAction>[
+              CupertinoActionSheetAction(
+                isDefaultAction: viewModel.selectedTabIndex == 0,
+                onPressed: () {
+                  viewModel.setSelectedTabIndex(0);
+                  Navigator.pop(context);
+                },
+                child: const Text('All Foods'),
+              ),
+              CupertinoActionSheetAction(
+                isDefaultAction: viewModel.selectedTabIndex == 1,
+                onPressed: () {
+                  viewModel.setSelectedTabIndex(1);
+                  Navigator.pop(context);
+                },
+                child: const Text('Shopping List'),
+              ),
+            ],
+            cancelButton: CupertinoActionSheetAction(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
           ),
-          CupertinoActionSheetAction(
-            isDefaultAction: viewModel.selectedTabIndex == 1,
-            onPressed: () {
-              viewModel.setSelectedTabIndex(1);
-              Navigator.pop(context);
-            },
-            child: const Text('Shopping List'),
-          ),
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Cancel'),
-        ),
-      ),
     );
   }
 
@@ -90,9 +91,10 @@ class _FoodListScreenContentState extends State<_FoodListScreenContent> {
         final shoppingListFoods = viewModel.shoppingListFoods;
 
         // Choose icon based on selected tab
-        final leadingIcon = viewModel.selectedTabIndex == 0 
-            ? CupertinoIcons.list_bullet 
-            : CupertinoIcons.cart;
+        final leadingIcon =
+            viewModel.selectedTabIndex == 0
+                ? CupertinoIcons.list_bullet
+                : CupertinoIcons.cart;
 
         return CupertinoPageScaffold(
           navigationBar: CupertinoNavigationBar(
@@ -102,10 +104,7 @@ class _FoodListScreenContentState extends State<_FoodListScreenContent> {
               onTap: () => _showFilterMenu(context, viewModel),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  leadingIcon,
-                  color: CupertinoColors.activeBlue,
-                ),
+                child: Icon(leadingIcon, color: CupertinoColors.activeBlue),
               ),
             ),
           ),

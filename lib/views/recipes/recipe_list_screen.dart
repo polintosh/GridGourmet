@@ -127,23 +127,25 @@ class _RecipeListScreenContent extends StatelessWidget {
                                     ),
                                   )
                                   : SliverToBoxAdapter(
-                                      child: GridView.builder(
-                                        shrinkWrap: true,
-                                        physics: const NeverScrollableScrollPhysics(),
-                                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2, // Two columns
-                                          childAspectRatio: 0.75,
-                                          crossAxisSpacing: 16,
-                                          mainAxisSpacing: 16,
-                                        ),
-                                        itemCount: viewModel.recipes.length,
-                                        itemBuilder: (context, index) {
-                                          return RecipeGridItem(
-                                            recipe: viewModel.recipes[index],
-                                          );
-                                        },
-                                      ),
+                                    child: GridView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      gridDelegate:
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 2, // Two columns
+                                            childAspectRatio: 0.75,
+                                            crossAxisSpacing: 16,
+                                            mainAxisSpacing: 16,
+                                          ),
+                                      itemCount: viewModel.recipes.length,
+                                      itemBuilder: (context, index) {
+                                        return RecipeGridItem(
+                                          recipe: viewModel.recipes[index],
+                                        );
+                                      },
                                     ),
+                                  ),
                         ),
 
                         // Heading for recipes by category (different item types)
